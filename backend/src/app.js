@@ -8,8 +8,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 const authRouter = require("./Routes/auth.route");
+const noteRouter = require("./Routes/note.route");
 
 app.use("/api/auth", authRouter);
+app.use("/api/note", noteRouter);
 
 DBConnection()
   .then(() => {
