@@ -239,3 +239,72 @@ No request body required.
 
 - The server should clear the authentication cookie (e.g. Set-Cookie: token=; Max-Age=0) or otherwise instruct the client to remove stored tokens.
 - The endpoint should not return any sensitive user data.
+
+---
+
+### GET /profile
+
+Retrieve the authenticated user's profile information.
+
+#### Description
+
+Fetches the profile details of the currently authenticated user. This endpoint requires a valid authentication token and returns the user's information excluding sensitive data like passwords.
+
+#### Request Method
+
+`GET`
+
+#### Authentication
+
+Requires valid authentication (token cookie or header) — provided by AuthMiddleware in the route.
+
+#### Request Body
+
+No request body required.
+
+#### Response Status Codes
+
+| Status Code | Message          | Description                                       |
+| ----------- | ---------------- | ------------------------------------------------- |
+| **200**     | Success          | User profile retrieved successfully.              |
+| **404**     | "User Not Found" | The authenticated user could not be found.        |
+| **500**     | Error message    | Unexpected server error during profile retrieval. |
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "user": {
+    "_id": "user_id",
+    "firstName": "John",
+    "lastName": "Doe",
+    "emailId": "john.doe@example.com"
+  }
+}
+```
+
+#### Error Response Examples
+
+**404 - User Not Found:**
+
+```json
+{
+  "message": "User Not Found"
+}
+```
+
+**500 - Server Error:**
+
+```json
+{
+  "success": false,
+  "message": "<error description>"
+}
+```
+
+#### Notes
+
+- This endpoint requires authentication; unauthenticated requests will be rejected.
+- The response includes user details but excludes sensitive information like passwords.
+- The user object returned matches the structure from registration/login responses.
