@@ -3,10 +3,15 @@ const { Schema } = mongoose;
 
 const noteSchema = new Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
     title: {
       type: String,
       required: [true, "This field must Be Required"],
       minLength: [3, "Length must be greater Than 3"],
+
       trim: true,
     },
     content: {
