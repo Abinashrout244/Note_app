@@ -30,14 +30,14 @@ const editNote = async (req, res) => {
     }
 
     const updateNote = await noteModel.findByIdAndUpdate(noteId, req.body, {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     });
     if (!updateNote) {
       return res.status(404).json({ message: "Note not exist" });
     }
 
-    res.json({ updateNote });
+    res.status(200).json({ updateNote });
   } catch (err) {
     res.status(500).json({ sucess: false, message: err.message });
   }

@@ -48,6 +48,11 @@ const userSchema = new Schema(
       default:
         "https://tse2.mm.bing.net/th/id/OIP.CIn8fInVEpY4ti24C9LfWgHaFJ?pid=Api&P=0&h=180",
     },
+    about: {
+      type: String,
+      default: "Add About",
+      maxLength: 200,
+    },
   },
   {
     timestamps: true,

@@ -309,6 +309,64 @@ No request body required.
 - The response includes user details but excludes sensitive information like passwords.
 - The user object returned matches the structure from registration/login responses.
 
+### PUT /profile-edit
+
+Update the authenticated user's profile information.
+
+#### Description
+
+Updates the currently authenticated user's profile fields (for example `firstName`, `lastName`, `about`, `photoURL`). Validates input and returns the updated user document.
+
+#### Request Method
+
+`PUT`
+
+#### Authentication
+
+Requires valid authentication (token cookie or header) — provided by `authMiddleware` in the route.
+
+#### Request Body
+
+Send a JSON object with any of the user fields to update. Example:
+
+```json
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "about": "Full-stack developer",
+  "photoURL": "https://example.com/avatar.jpg"
+}
+```
+
+#### Response Status Codes
+
+| Status Code | Message             | Description                                |
+| ----------- | ------------------- | ------------------------------------------ |
+| **200**     | Update Successfully | User updated and returns the updated user. |
+| **404**     | "User not found"    | Authenticated user could not be found.     |
+| **500**     | Error message       | Unexpected server error during update.     |
+
+#### Success Response (200)
+
+```json
+{
+  "message": "Update Successfully",
+  "updateData": {
+    "_id": "user_id",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "emailId": "jane.doe@example.com",
+    "about": "Full-stack developer"
+  }
+}
+```
+
+#### Notes
+
+- Only authenticated users can update their profile.
+- Submitted fields are validated according to the user schema.
+- Sensitive operations (like changing password) should be handled carefully on the client and server side.
+
 ---
 
 ## Note Endpoints
@@ -606,13 +664,13 @@ No request body required:
 - Authentication is required to delete notes
 - Users can only delete their own notes
 
-### DELETE /all-note
+### GET /all-note
 
-Retrieve all notes for the authenticated user
+Retrieve all notes for the authenticated user.
 
 #### Description
 
-Fetches all notes associated with the currently authenticated user.
+Fetches all notes associated with the currently authenticated user. Notes are filtered by the authenticated user's `userId`.
 
 #### Request Method
 
@@ -620,17 +678,17 @@ Fetches all notes associated with the currently authenticated user.
 
 #### Authentication
 
-Requires valid authentication (token cookie or header) — provided by authMiddleware in the route.
+Requires valid authentication (token cookie or header) — provided by `authMiddleware` in the route.
 
 #### Request Data
 
-No request body required:
+No request body required.
 
 #### Response Status Codes
 
 | Status Code | Message        | Description                              |
 | ----------- | -------------- | ---------------------------------------- |
-| **200**     | Sucess         | Notes retrieved successfully.            |
+| **200**     | Success        | Notes retrieved successfully.            |
 | **401**     | "Unauthorized" | Missing or invalid authentication token. |
 | **500**     | Error message  | Unexpected server error.                 |
 
@@ -638,7 +696,7 @@ No request body required:
 
 ```json
 {
-  "sucess": true,
+  "success": true,
   "data": [
     {
       "_id": "note_id1",
@@ -666,12 +724,12 @@ No request body required:
 
 ```json
 {
-  "sucess": false,
+  "success": false,
   "message": "<error description>"
 }
 ```
 
 #### Notes
 
-- Returns an array of notes for the authenticated user
-- Authentication is required to retrieve notes
+- Returns an array of notes for the authenticated user.
+- Authentication is required to retrieve notes.

@@ -3,7 +3,7 @@ const { validateSignupData } = require("../utils/validateData");
 
 const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, emailId, password } = req.body;
+    const { firstName, lastName, emailId, password, about } = req.body;
     if (!firstName || !emailId || !password) {
       return res.status(400).json({ message: "Feild Must Be Required" });
     }
@@ -21,6 +21,7 @@ const registerUser = async (req, res) => {
       lastName,
       emailId,
       password: hashPassword,
+      about,
     });
 
     const token = await user.getAuthToken();
@@ -82,4 +83,24 @@ const getUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, getUser };
+const profileEdit = async (req, res) => {
+  try {
+    const logedinUser = req.getUser;
+
+    const updateData = await User.findByIdAndUpdate(
+      { _id: logedinUser._id },
+      req.body,
+      { returnDocument: "after", runValidators: true },
+    );
+
+    if (!updateData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Update Successfully", updateData });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, getUser, profileEdit };
