@@ -7,46 +7,63 @@ import { setNotes } from "../utils/NoteSlice";
 export default function NoteModal({ close, editNote, dashTitle }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [tags, setTags] = useState([]);
+  const [inputTags, setInputTags] = useState("");
+
   const dispatch = useDispatch();
 
-  // ✅ Prefill when editing
+  const addClick = () => {
+    if (!inputTags.trim()) return;
+    //setTags((prev) => [...prev, inputTags.trim()]);
+    setTags([...tags, inputTags.trim()]);
+    setInputTags("");
+  };
+
+  const removeClick = (itemIndex) => {
+    const remove = setTags((prev) =>
+      prev.filter((item, index) => index != itemIndex),
+    );
+    return remove;
+  };
+
+  //  Prefill when editing
   useEffect(() => {
     if (editNote) {
       setTitle(editNote.title);
       setContent(editNote.content);
+      setTags(editNote.tags);
     } else {
       setTitle("");
       setContent("");
+      setTags(tags);
     }
   }, [editNote]);
 
-  // ✅ Save Logic (Add or Update)
+  //  Save Logic (Add or Update)
   const handleSave = async () => {
     try {
       if (!title || !content) {
         return alert("Fields cannot be empty");
       }
 
-      let res;
-
-      // 🟢 UPDATE NOTE
+      //  UPDATE NOTE
       if (editNote) {
-        res = await axios.put(
+        const res = await axios.put(
           `${BASE_URL}/api/note/edit-note/${editNote._id}`,
-          { title, content },
+          { title, content, tags },
           { withCredentials: true },
         );
       }
-      // 🟢 ADD NOTE
+      //  ADD NOTE
       else {
-        res = await axios.post(
+        const res = await axios.post(
           `${BASE_URL}/api/note/add-note`,
-          { title, content },
+          { title, content, tags },
           { withCredentials: true },
         );
       }
 
-      // ✅ Refresh Notes After Add/Update
+      //  Refresh Notes After Add/Update
       const updatedNotes = await axios.get(`${BASE_URL}/api/note/all-note`, {
         withCredentials: true,
       });
@@ -78,6 +95,37 @@ export default function NoteModal({ close, editNote, dashTitle }) {
           onChange={(e) => setContent(e.target.value)}
           className="w-full p-2 border rounded-lg"
         />
+
+        <div className="flex flex-row gap-3 items-center">
+          <input
+            type="text"
+            placeholder="addTags"
+            value={inputTags}
+            onChange={(e) => setInputTags(e.target.value)}
+            className="p-2 border rounded-lg"
+          />
+          <button className="bg-sky-300 p-2 size-8" onClick={addClick}>
+            +
+          </button>
+        </div>
+        <ul className="flex flex-wrap  gap-2">
+          {tags.map((item, index) => {
+            return (
+              <li
+                key={index}
+                className="flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full shadow-sm border border-green-200 hover:shadow-md transition"
+              >
+                <p className="text-sm font-medium">{item}</p>
+                <button
+                  className=" size-5 items-center justify-center bg-green-300 hover:bg-red-400 hover:text-white transition text-xs font-bold rounded-full"
+                  onClick={() => removeClick(index)}
+                >
+                  X
+                </button>
+              </li>
+            );
+          })}
+        </ul>
 
         <div className="flex justify-end gap-2">
           <button onClick={close} className="px-3 py-1 border rounded-lg">

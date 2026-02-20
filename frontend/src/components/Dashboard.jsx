@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [editNote, setEditNote] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dashTitle, setDashTitle] = useState("Add Notes");
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
