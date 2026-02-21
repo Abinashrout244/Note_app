@@ -7,33 +7,38 @@ import ProfileEdit from "./components/ProfileEdit";
 import { Provider } from "react-redux";
 import NoteStore from "./utils/NoteStore";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import ThemeProvider from "./utils/ThemeContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Provider store={NoteStore}>
-      <BrowserRouter basename="/">
-        <Routes>
-          <Route path="/" element={<Body />}>
-            <Route
-              index
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="profile"
-              element={
-                <ProtectedRoute>
-                  <ProfileEdit />
-                </ProtectedRoute>
-              }
-            />
-          </Route>
-          <Route path="login" element={<Auth />} />
-        </Routes>
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter basename="/">
+          <Toaster position="bottom-right" />
+          <Routes>
+            <Route path="/" element={<Body />}>
+              <Route
+                index
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfileEdit />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+            <Route path="login" element={<Auth />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </Provider>
   );
 }

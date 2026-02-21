@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BASE_URL } from "../utils/Constants";
 import { addUser } from "../utils/UserSlice";
+import toast from "react-hot-toast";
 
 const ProfileEdit = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -34,6 +36,13 @@ const ProfileEdit = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const isEdited =
+    form.firstName !== (user?.firstName || "") ||
+    form.lastName !== (user?.lastName || "") ||
+    form.emailId !== (user?.emailId || "") ||
+    form.about !== (user?.about || "") ||
+    form.photoURL !== (user?.photoURL || "");
+
   const handleEdit = async (e) => {
     e.preventDefault();
     try {
@@ -44,7 +53,8 @@ const ProfileEdit = () => {
       });
 
       dispatch(addUser(res.data.user));
-      alert("Profile Updated Successfully ✅");
+
+      toast.success("Profile Updated Successfully ");
     } catch (err) {
       console.log(err.response?.data || err.message);
     } finally {
@@ -63,92 +73,96 @@ const ProfileEdit = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 pt-15">
-        <form
-          onSubmit={handleEdit}
-          className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-8 space-y-5"
-        >
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Edit Profile
-          </h2>
-
-          <input
-            type="text"
-            name="firstName"
-            value={form.firstName}
-            onChange={handleChange}
-            placeholder="First Name"
-            className="w-full p-3 rounded-xl border focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          <input
-            type="text"
-            name="lastName"
-            value={form.lastName}
-            onChange={handleChange}
-            placeholder="Last Name"
-            className="w-full p-3 rounded-xl border focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          <input
-            type="email"
-            name="emailId"
-            value={form.emailId}
-            onChange={handleChange}
-            placeholder="Email"
-            className="w-full p-3 rounded-xl border focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          <input
-            type="text"
-            name="photoURL"
-            value={form.photoURL}
-            onChange={handleChange}
-            placeholder="Profile Image URL"
-            className="w-full p-3 rounded-xl border focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          <textarea
-            name="about"
-            value={form.about}
-            onChange={handleChange}
-            rows="3"
-            placeholder="About You"
-            className="w-full p-3 rounded-xl border focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-60"
+    <div className="min-h-[calc(100vh-64px)] pt-24 pb-10 md:pb-0 md:pt-16 bg-linear-to-br from-slate-100 via-blue-50 to-indigo-100 flex items-center">
+      <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-10 items-center">
+          {/* ================= FORM ================= */}
+          <form
+            onSubmit={handleEdit}
+            className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 space-y-4"
           >
-            {loading ? "Saving..." : "Save Changes"}
-          </button>
-        </form>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+              Edit Profile
+            </h2>
 
-        <div className="flex items-center justify-center">
-          <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden hover:scale-105 transition-all duration-500">
-            <div className="h-28 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+            <input
+              type="text"
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+              placeholder="First Name"
+              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
 
-            <div className="flex flex-col items-center px-6 pb-8 -mt-14">
-              <img
-                src={form.photoURL || "https://via.placeholder.com/150"}
-                alt="Profile"
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
-              />
+            <input
+              type="text"
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+              placeholder="Last Name"
+              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
 
-              <h3 className="mt-4 text-2xl font-bold text-gray-800 text-center">
-                {form.firstName} {form.lastName}
-              </h3>
+            <input
+              type="email"
+              name="emailId"
+              value={form.emailId}
+              onChange={handleChange}
+              placeholder="Email"
+              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
 
-              <p className="text-sm text-gray-500 mt-1 text-center">
-                {form.emailId}
-              </p>
+            <input
+              type="text"
+              name="photoURL"
+              value={form.photoURL}
+              onChange={handleChange}
+              placeholder="Profile Image URL"
+              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
 
-              <p className="text-center mt-4 text-gray-600 text-sm leading-relaxed px-4">
-                {form.about}
-              </p>
+            <textarea
+              name="about"
+              value={form.about}
+              onChange={handleChange}
+              rows="3"
+              placeholder="About You"
+              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none resize-none"
+            />
+
+            <button
+              type="submit"
+              disabled={!isEdited || loading}
+              className={`w-full py-3  text-white rounded-xl font-semibold shadow-lg  ${isEdited === false ? "cursor-not-allowed bg-indigo-300" : "cursor-grab bg-linear-to-r from-blue-600 to-indigo-600 hover:scale-[1.02] transition-all duration-300"}`}
+            >
+              {loading ? "Saving..." : "Save Changes"}
+            </button>
+          </form>
+
+          {/* ================= PROFILE CARD ================= */}
+          <div className="flex justify-center md:justify-end">
+            <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden">
+              <div className="h-28 sm:h-32 bg-linear-to-r from-blue-500 to-indigo-600"></div>
+
+              <div className="flex flex-col items-center px-6 pb-8 -mt-12 sm:-mt-14">
+                <img
+                  src={form.photoURL || "https://via.placeholder.com/150"}
+                  alt="Profile"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-white shadow-lg"
+                />
+
+                <h3 className="mt-3 text-xl sm:text-2xl font-bold text-gray-800 text-center">
+                  {form.firstName} {form.lastName}
+                </h3>
+
+                <p className="text-sm text-gray-500 mt-1 text-center">
+                  {form.emailId}
+                </p>
+
+                <p className="text-center mt-3 text-gray-600 text-sm">
+                  {form.about}
+                </p>
+              </div>
             </div>
           </div>
         </div>
