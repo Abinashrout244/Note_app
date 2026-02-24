@@ -13,6 +13,7 @@ export default function NoteModal({ close, editNote, dashTitle }) {
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [inputTags, setInputTags] = useState("");
+  const [err, setErr] = useState("");
   const { theme } = useContext(ThemeContext);
 
   const dispatch = useDispatch();
@@ -79,7 +80,8 @@ export default function NoteModal({ close, editNote, dashTitle }) {
 
       close(); // close modal
     } catch (err) {
-      console.log(err.response?.data || err.message);
+      // console.log(err.response?.data || err.message);
+      setErr(err?.response?.data);
     }
   };
 
@@ -118,6 +120,10 @@ export default function NoteModal({ close, editNote, dashTitle }) {
             rows="4"
             className="w-full p-3 rounded-xl bg-white/70 backdrop-blur border border-white/40 focus:ring-4 focus:ring-indigo-300 outline-none resize-none transition-all duration-300 shadow-sm"
           />
+
+          {err && (
+            <p className="text-red-600 font-semibold">ERROR:{err?.message}</p>
+          )}
 
           <div className="flex gap-3 items-center">
             <input

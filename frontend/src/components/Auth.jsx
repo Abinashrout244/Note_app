@@ -6,12 +6,13 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
 import toast from "react-hot-toast";
 
-export default function Auth({ setUser }) {
+export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setlastName] = useState("");
   const [emailId, setEmailId] = useState("test2.mail@gmail.com");
   const [password, setPassword] = useState("Test2@1234_");
+  const [err, setErr] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export default function Auth({ setUser }) {
       navigate("/");
     } catch (err) {
       console.log(err.response);
+      setErr(err?.response?.data);
     }
   };
 
@@ -51,6 +53,7 @@ export default function Auth({ setUser }) {
       navigate("/");
     } catch (err) {
       console.log(err.response);
+      setErr(err?.response?.data);
     }
   };
 
@@ -101,6 +104,10 @@ export default function Auth({ setUser }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          {err && (
+            <p className="text-red-600 font-semibold">ERROR:{err?.message}</p>
+          )}
 
           {isSignup ? (
             <button

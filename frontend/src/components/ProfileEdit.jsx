@@ -11,6 +11,7 @@ const ProfileEdit = () => {
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [err, setErr] = useState("");
 
   const [form, setForm] = useState({
     firstName: "",
@@ -56,7 +57,8 @@ const ProfileEdit = () => {
 
       toast.success("Profile Updated Successfully ");
     } catch (err) {
-      console.log(err.response?.data || err.message);
+      //console.log(err.response?.data || err.message);
+      setErr(err?.response?.data);
     } finally {
       setLoading(false);
     }
@@ -137,6 +139,9 @@ const ProfileEdit = () => {
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
+            {err && (
+              <p className="font-semibold text-red-600">ERROR:{err?.message}</p>
+            )}
           </form>
 
           {/* ================= PROFILE CARD ================= */}

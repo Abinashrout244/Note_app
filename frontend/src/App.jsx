@@ -9,6 +9,7 @@ import NoteStore from "./utils/NoteStore";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ThemeProvider from "./utils/ThemeContext";
 import { Toaster } from "react-hot-toast";
+import Error from "./utils/Error";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
               />
             </Route>
             <Route path="login" element={<Auth />} />
+            <Route path="*" element={<Error />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
