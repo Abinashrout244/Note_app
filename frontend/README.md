@@ -99,12 +99,6 @@ Run these from the `frontend` folder:
 - `ProtectedRoute.jsx` wraps routes that require authentication.
 - API calls should be performed via `axios` with endpoints implemented in your backend; `Auth.jsx` and `NoteModal.jsx` are the main integration points for auth and note actions.
 
-## Next steps / Tips
-
-- Connect the frontend to a backend API for persistent storage and authentication (JWT/session).
-- Add form validation to `Auth.jsx` and `NoteModal.jsx`.
-- Add unit/integration tests for slices and key components.
-
 ## Contributing
 
 If you'd like to contribute, fork the repo, create a branch for your feature or fix, and open a pull request with a clear description of changes.
