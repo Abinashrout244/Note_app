@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: " http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
 
     credentials: true,
   }),
@@ -17,9 +17,13 @@ app.use(
 
 const authRouter = require("./Routes/auth.route");
 const noteRouter = require("./Routes/note.route");
+const chatRouter = require("./Routes/chat.route");
+const { postRouter } = require("./Routes/post.route");
 
 app.use("/api/auth", authRouter);
 app.use("/api/note", noteRouter);
+app.use("/api/msg", chatRouter);
+app.use("/api/community", postRouter);
 
 DBConnection()
   .then(() => {

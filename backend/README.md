@@ -733,3 +733,233 @@ No request body required.
 
 - Returns an array of notes for the authenticated user.
 - Authentication is required to retrieve notes.
+
+---
+
+## Post Endpoints
+
+### GET /posts
+
+Retrieve all community posts.
+
+#### Description
+
+Fetches all posts stored in the database sorted by newest first. No authentication is required for this public endpoint.
+
+#### Request Method
+
+`GET`
+
+#### Response Status Codes
+
+| Status Code | Message         | Description                          |
+| ----------- | --------------- | ------------------------------------ |
+| **200**     | Success         | Posts retrieved successfully.        |
+| **500**     | Error message   | Unexpected server error.             |
+
+#### Success Response (200)
+
+```json
+[
+  {
+    "_id": "post_id",
+    "userId": "user_id",
+    "author": "John Doe",
+    "avatar": "https://...",
+    "title": "Sample Post",
+    "description": "Post description.",
+    "image": "https://...",
+    "likes": 0,
+    "comments": [],
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  }
+]
+```
+
+---
+
+### POST /post
+
+Create a new community post (requires authentication).
+
+#### Description
+
+Allows a logged‑in user to create a post with optional image. Validates that at least one of title, description or image is present.
+
+#### Request Method
+
+`POST`
+
+#### Authentication
+
+Requires valid authentication (`authMiddleware`).
+
+#### Required Data
+
+Send a JSON object in the request body with any of the following fields:
+
+| Field       | Type   | Required | Description                             |
+| ----------- | ------ | -------- | --------------------------------------- |
+| `title`     | String | No       | Post title                              |
+| `description` | String | No       | Post description                        |
+| `image`     | String | No       | URL of an image associated with post    |
+
+> At least one of title/description/image must be provided.
+
+#### Response Status Codes
+
+| Status Code | Message                    | Description                        |
+| ----------- | -------------------------- | ---------------------------------- |
+| **201**     | (post object)              | Post created successfully.         |
+| **400**     | "Post content is required" | No content supplied.               |
+| **401**     | "Login required"          | Authentication missing or invalid. |
+| **500**     | Error message              | Unexpected server error.           |
+
+---
+
+### PUT /posts/:id/like  (also PATCH)
+
+Increment the like counter of a post.
+
+#### Description
+
+Increases the `likes` field on the specified post by one. This endpoint is idempotent on the same request and does not require authentication.
+
+#### Request Method
+
+`PUT` or `PATCH`
+
+#### URL Parameters
+
+| Parameter | Type   | Required | Description           |
+|-----------|--------|----------|-----------------------|
+| `id`      | String | Yes      | The ID of the post to like |
+
+#### Response Status Codes
+
+| Status Code | Message         | Description                          |
+| ----------- | --------------- | ------------------------------------ |
+| **200**     | (updated post)  | Post returned with incremented likes |
+| **404**     | "Post not found" | No post with given ID exists         |
+| **500**     | Error message   | Unexpected server error.             |
+
+---
+
+### POST /posts/:id/comment
+
+Add a comment to a post (requires authentication).
+
+#### Description
+
+Appends a comment object to the `comments` array of the specified post. The commenter must be authenticated.
+
+#### Request Method
+
+`POST`
+
+#### Authentication
+
+Requires valid authentication (`authMiddleware`).
+
+#### URL Parameters
+
+| Parameter | Type   | Required | Description           |
+|-----------|--------|----------|-----------------------|
+| `id`      | String | Yes      | The ID of the post to comment on |
+
+#### Required Data
+
+Send a JSON object in the request body:
+
+| Field | Type   | Required | Description                |
+|-------|--------|----------|----------------------------|
+| `text`| String | Yes      | The comment text content   |
+
+#### Response Status Codes
+
+| Status Code | Message                    | Description                        |
+| ----------- | -------------------------- | ---------------------------------- |
+| **200**     | (post object with comment) | Comment added successfully         |
+| **400**     | "Comment text is required"| Missing comment text              |
+| **401**     | "Login required"          | Authentication missing or invalid. |
+| **404**     | "Post not found"          | No post with given ID exists       |
+| **500**     | Error message              | Unexpected server error.           |
+
+---
+
+### DELETE /posts/:id
+
+Delete a post created by the authenticated user.
+
+#### Description
+
+Removes the specified post if the requester is the post owner. Authentication is required.
+
+#### Request Method
+
+`DELETE`
+
+#### Authentication
+
+Requires valid authentication (`authMiddleware`).
+
+#### URL Parameters
+
+| Parameter | Type   | Required | Description           |
+|-----------|--------|----------|-----------------------|
+| `id`      | String | Yes      | The ID of the post to delete |
+
+#### Response Status Codes
+
+| Status Code | Message                    | Description                        |
+| ----------- | -------------------------- | ---------------------------------- |
+| **200**     | "Post deleted successfully" | Deletion succeeded                 |
+| **401**     | "Login required"          | Authentication missing or invalid. |
+| **403**     | "Unauthorized"            | User is not the owner of the post  |
+| **404**     | "Post not found"          | No post with given ID exists       |
+| **500**     | Error message              | Unexpected server error.           |
+
+---
+
+## Chat Endpoint
+
+### POST /chat
+
+Send a message to the Grok chatbot and receive a streamed response.
+
+#### Description
+
+Accepts a user message (and optional conversation ID) then streams tokens back over a Server‑Sent Events connection. The client should listen for `token`, `error`, and `done` events to reconstruct the bot reply.
+
+#### Request Method
+
+`POST`
+
+#### Authentication
+
+No authentication is required for the chat endpoint.
+
+#### Request Body
+
+```json
+{
+  "message": "Hello, how are you?",
+  "conversationId": "optional_conversation_id"
+}
+```
+
+#### Response
+
+The server sets `Content-Type: text/event-stream` and pushes JSON lines of the form:
+
+```json
+{ "type": "token", "token": "<text chunk>" }
+```
+
+and finally `{ "type": "done" }` when complete. Errors are sent as `{ "type": "error", "error": "<message>" }`.
+
+#### Error Handling
+
+If the `message` field is missing a 400 error is returned. Server or API errors stream an error event and end the stream.
+
+---
