@@ -3,6 +3,8 @@
 ![Home Page](./screenshots/Home.png)
 ![Modal Page](./screenshots/Modal.png)
 ![Login Page](./screenshots/Login.png)
+![Community Page](./screenshots/community.png)
+![Chat_Bot](./screenshots/chatbot.png)
 
 A full-stack note-taking application that allows users to create, manage, and organize their personal notes securely. Built with modern web technologies, this app provides a seamless experience for note management with user authentication, tagging, search functionality, and theme customization.
 
@@ -24,6 +26,12 @@ A full-stack note-taking application that allows users to create, manage, and or
 - **Tag System**: Organize notes with custom tags
 - **Search Functionality**: Search notes by title or content
 - **Filtering**: Filter notes based on tags or other criteria
+
+### Community & Chat (New!)
+
+- **Community Feed**: Post text or images, see others' posts
+- **Like & Comment**: Interact with posts via likes and threaded replies
+- **Chatbot Interface**: Talk to an AI assistant backed by Grok with streaming responses
 
 ### User Interface
 
@@ -150,7 +158,17 @@ A full-stack note-taking application that allows users to create, manage, and or
 - `PUT /api/note/edit-note/:noteId` - Edit a note
 - `DELETE /api/note/delete-note/:noteId` - Delete a note
 - `GET /api/note/all-note` - Get all notes
+### Community
 
+- `GET /api/community/posts` - Retrieve all posts
+- `POST /api/community/post` - Create new post (requires auth)
+- `PUT|PATCH /api/community/posts/:id/like` - Like a post
+- `POST /api/community/posts/:id/comment` - Comment on a post (requires auth)
+- `DELETE /api/community/posts/:id` - Delete own post (requires auth)
+
+### Chat
+
+- `POST /api/msg/chat` - Send message to chatbot (streams response tokens)
 ## Project Structure
 
 ```
@@ -161,16 +179,21 @@ NoteApp/
 │   │   ├── config/
 │   │   │   └── database.js
 │   │   ├── controllers/
+│   │   │   ├── chatbot.controller.js
 │   │   │   ├── note.controller.js
+│   │   │   ├── post.controller.js
 │   │   │   └── user.controller.js
 │   │   ├── middlewares/
 │   │   │   └── auth.middleware.js
 │   │   ├── models/
 │   │   │   ├── notes.model.js
+│   │   │   ├── post.model.js
 │   │   │   └── user.model.js
 │   │   ├── Routes/
 │   │   │   ├── auth.route.js
-│   │   │   └── note.route.js
+│   │   │   ├── chat.route.js
+│   │   │   ├── note.route.js
+│   │   │   └── post.route.js
 │   │   └── utils/
 │   │       └── validateData.js
 │   ├── package.json
@@ -180,16 +203,21 @@ NoteApp/
 │   │   ├── components/
 │   │   │   ├── Auth.jsx
 │   │   │   ├── Body.jsx
+│   │   │   ├── Chat.jsx
+│   │   │   ├── Community.jsx
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── Footer.jsx
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── NoteCard.jsx
 │   │   │   ├── NoteModal.jsx
-│   │   │   └── ProfileEdit.jsx
+│   │   │   ├── PostItem.jsx
+│   │   │   ├── ProfileEdit.jsx
+│   │   │   └── SideCrad.jsx
 │   │   ├── utils/
+│   │   │   ├── ChatSlice.js
 │   │   │   ├── Constants.js
 │   │   │   ├── NoteSlice.js
-│   │   │   ├── NoteStore.js
+│   │   │   ├── Store.js
 │   │   │   ├── ProtectedRoute.jsx
 │   │   │   ├── ThemeContext.jsx
 │   │   │   └── UserSlice.js
@@ -197,7 +225,7 @@ NoteApp/
 │   │   ├── App.css
 │   │   └── main.jsx
 │   ├── package.json
-│   └── README.md
+```│   └── README.md
 └── README.md
 ```
 
