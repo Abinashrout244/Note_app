@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import UserSlice from "./UserSlice";
 import NoteSlice from "./NoteSlice";
+import ChatSlice from "./ChatSlice";
 
-const NoteStore = configureStore({
+const Store = configureStore({
   reducer: {
     user: UserSlice,
     note: NoteSlice,
+    chat: ChatSlice,
   },
 });
 
-export default NoteStore;
+export default Store;

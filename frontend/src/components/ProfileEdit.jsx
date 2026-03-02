@@ -53,7 +53,10 @@ const ProfileEdit = () => {
         withCredentials: true,
       });
 
-      dispatch(addUser(res.data.user));
+      const updatedUser = res?.data?.user || res?.data?.updateData;
+      if (updatedUser) {
+        dispatch(addUser(updatedUser));
+      }
 
       toast.success("Profile Updated Successfully ");
     } catch (err) {

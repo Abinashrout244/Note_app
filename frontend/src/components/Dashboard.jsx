@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import NoteCard from "./NoteCard";
 import NoteModal from "./NoteModal";
-import { Plus, FileText, Activity, Menu, X, SearchIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Plus, FileText, Menu, X, Users, MessageCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 import { BASE_URL } from "../utils/Constants";
 import axios from "axios";
 import { setNotes } from "../utils/NoteSlice";
 import { ThemeContext } from "../utils/ThemeContext";
+import SideCrad from "./SideCrad";
 
 export default function Dashboard() {
   const [openModal, setOpenModal] = useState(false);
@@ -16,8 +17,6 @@ export default function Dashboard() {
   const [dashTitle, setDashTitle] = useState("Add Notes");
 
   const { filteredNotes, theme } = useContext(ThemeContext);
-
-  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const fetch_Notes = async () => {
@@ -70,48 +69,37 @@ export default function Dashboard() {
 
       {/* SIDEBAR */}
       <div
-        className={`${theme === "Light" ? "bg-white/80" : "bg-slate-800"} fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 md:w-1/5  backdrop-blur-xl border-r border-gray-200 shadow-xl p-6 transition-transform duration-300 z-40
-      ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0`}
+        className={`${
+          theme === "Light" ? "bg-white/80" : "bg-slate-800"
+        } fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 md:w-1/5 backdrop-blur-xl border-r border-gray-200 shadow-xl p-6 transition-transform duration-300 z-40 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
+        {/* Mobile Close Button */}
         <div className="flex justify-between items-center md:hidden mb-4">
           <h2 className="font-bold text-lg">Menu</h2>
           <button onClick={() => setSidebarOpen(false)}>
-            <X />
+            <X size={20} />
           </button>
         </div>
 
+        {/* Sidebar Header */}
         <h2 className="text-2xl font-bold mb-6 bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
           Dashboard
         </h2>
 
-        <div
-          className={`${theme === "Light" ? "bg-white/80" : "bg-slate-900"} rounded-2xl p-5 shadow-md mb-6 border`}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-indigo-100 p-2 rounded-lg">
-              <FileText className="text-indigo-600" size={20} />
-            </div>
-            <p className="text-gray-500 text-sm font-semibold">Total Notes</p>
-          </div>
-          <p className="text-4xl font-bold text-indigo-600">{notes?.length}</p>
-        </div>
+        <SideCrad name="Total Notes" value={notes?.length} Icon={FileText} />
+        <Link to="/community">
+          <SideCrad name="Community" desc="Enter Community" Icon={Users} />
+        </Link>
 
-        <div
-          className={`${theme === "Light" ? "bg-white/80" : "bg-slate-900"} rounded-2xl p-5 shadow-md border `}
-        >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-purple-100 p-2 rounded-lg">
-              <Activity className="text-purple-600" size={20} />
-            </div>
-            <p className="text-gray-500 font-semibold text-sm">Activity</p>
-          </div>
-          <p
-            className={`${theme == "Light" ? "text-gray-700" : "text-gray-400"} text-sm  font-semibold`}
-          >
-            Manage and organize notes efficiently.
-          </p>
-        </div>
+        <Link to="/chat">
+          <SideCrad
+            name="Chat_Bot"
+            desc=" Ask Anything To the ChatBot"
+            Icon={MessageCircle}
+          />
+        </Link>
       </div>
 
       <div className="pt-24 p-6 md:ml-[20%]">

@@ -5,15 +5,17 @@ import Dashboard from "./components/Dashboard";
 import Auth from "./components/Auth";
 import ProfileEdit from "./components/ProfileEdit";
 import { Provider } from "react-redux";
-import NoteStore from "./utils/NoteStore";
+import Store from "./utils/Store";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ThemeProvider from "./utils/ThemeContext";
 import { Toaster } from "react-hot-toast";
 import Error from "./utils/Error";
+import ChatBot from "./components/Chat";
+import Community from "./components/Community";
 
 function App() {
   return (
-    <Provider store={NoteStore}>
+    <Provider store={Store}>
       <ThemeProvider>
         <BrowserRouter basename="/">
           <Toaster position="bottom-right" />
@@ -38,6 +40,15 @@ function App() {
             </Route>
             <Route path="login" element={<Auth />} />
             <Route path="*" element={<Error />} />
+            <Route
+              path="community"
+              element={
+                <ProtectedRoute>
+                  <Community />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="chat" element={<ChatBot />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
