@@ -20,6 +20,30 @@ This is the backend API for the NoteApp, a full-stack application for note-takin
 - MongoDB
 - JWT for authentication
 - bcrypt for password hashing
+- multer for handling multipart/form-data (file uploads)
+
+## Installation
+
+1. Navigate to the backend directory: `cd backend`
+2. Install dependencies: `npm install`
+
+## Dependencies
+
+- **express**: Web framework for Node.js
+- **mongoose**: MongoDB object modeling for Node.js
+- **jsonwebtoken**: For JWT token generation and verification
+- **bcryptjs**: For password hashing
+- **multer**: Middleware for handling file uploads
+- **cors**: For enabling Cross-Origin Resource Sharing
+- **cookie-parser**: For parsing cookies
+- **dotenv**: For loading environment variables
+- **nodemailer**: For sending emails
+- **axios**: HTTP client for making requests
+- **validator**: For data validation
+- **@google/genai**: Google Generative AI SDK
+- **openai**: OpenAI API client
+- **@openrouter/sdk**: SDK for OpenRouter API
+- **google-auth-library**: For Google OAuth authentication
 
 ## Project Structure & Implementation Details
 
@@ -95,7 +119,20 @@ backend/
 - `deletePost`: Remove posts created by user
 - Community engagement features
 
-#### 3. **Models** - Database Schemas
+#### 3. **Middlewares** - Custom Middleware Functions
+
+**auth.middleware.js**
+
+- Verifies JWT tokens from cookies to authenticate users
+- Checks if the user exists in the database
+- Attaches the authenticated user to the request object for further use
+
+**post.middleware.js**
+
+- Configures multer for file uploads with memory storage
+- Sets a file size limit of 5MB for uploaded files
+
+#### 4. **Models** - Database Schemas
 
 **user.model.js**
 

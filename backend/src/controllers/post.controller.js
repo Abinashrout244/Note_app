@@ -10,14 +10,21 @@ const allPosts = async (req, res) => {
   }
 };
 
-// Create a post
+// Create Post
 const createPost = async (req, res) => {
   try {
-    const { title, description, image } = req.body;
+    const { title, description } = req.body;
     const loggedInUser = req.getUser;
 
     if (!loggedInUser?._id) {
       return res.status(401).json({ msg: "Login required" });
+    }
+
+    let image = "";
+
+    if (req.file) {
+      const base64 = req.file.buffer.toString("base64");
+      image = `data:${req.file.mimetype};base64,${base64}`;
     }
 
     if (!title?.trim() && !description?.trim() && !image) {
@@ -32,65 +39,78 @@ const createPost = async (req, res) => {
       avatar: loggedInUser.photoURL || "",
       title: title?.trim() || "",
       description: description?.trim() || "",
-      image: image || "",
+      image,
     });
 
     await newPost.save();
+
     return res.status(201).json(newPost);
   } catch (err) {
+    console.error(err);
     return res.status(500).json({ msg: "Failed to create post" });
   }
 };
 
+// Delete Post
 const deletePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     const loggedInUserId = req.getUser?._id?.toString();
 
     if (!post) return res.status(404).json({ error: "Post not found" });
+
     if (!loggedInUserId) {
       return res.status(401).json({ error: "Login required" });
     }
 
-    // Allow delete only by post owner
     if (post.userId?.toString() !== loggedInUserId) {
       return res.status(403).json({ error: "Unauthorized" });
     }
 
     await post.deleteOne();
+
     res.json({ message: "Post deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete post" });
   }
 };
 
-// Like a post
+// Like Post
 const likePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+
     if (!post) return res.status(404).json({ msg: "Post not found" });
 
     post.likes += 1;
+
     await post.save();
+
     return res.json(post);
   } catch (err) {
     return res.status(500).json({ msg: "Failed to like post" });
   }
 };
 
-// Add comment
+// Add Comment
 const addComment = async (req, res) => {
   try {
     const text = req.body?.text?.trim();
     const loggedInUser = req.getUser;
 
-    if (!text) return res.status(400).json({ msg: "Comment text is required" });
+    if (!text) {
+      return res.status(400).json({ msg: "Comment text is required" });
+    }
+
     if (!loggedInUser?._id) {
       return res.status(401).json({ msg: "Login required" });
     }
 
     const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ msg: "Post not found" });
+
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found" });
+    }
 
     post.comments.push({
       userId: loggedInUser._id,
@@ -101,11 +121,19 @@ const addComment = async (req, res) => {
       text,
       createdAt: new Date().toLocaleString(),
     });
+
     await post.save();
+
     return res.json(post);
   } catch (err) {
     return res.status(500).json({ msg: "Failed to add comment" });
   }
 };
 
-module.exports = { allPosts, addComment, likePost, createPost, deletePost };
+module.exports = {
+  allPosts,
+  createPost,
+  likePost,
+  addComment,
+  deletePost,
+};
