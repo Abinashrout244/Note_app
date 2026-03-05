@@ -51,32 +51,51 @@ const Community = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     if (file.size / 1024 / 1024 > MAX_FILE_SIZE_MB) {
       setPopupMsg(`Max ${MAX_FILE_SIZE_MB}MB allowed`);
       return;
     }
+
     setImageFile(file);
+
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
   };
 
   const handleCreatePost = async () => {
-    if (!description.trim() && !imagePreview) return;
+    if (!description.trim() && !imageFile) return;
+
     try {
-      await axios.post(
-        `${API}/post`,
-        { title, description, image: imagePreview },
-        { withCredentials: true },
-      );
+      const formData = new FormData();
+
+      formData.append("title", title);
+      formData.append("description", description);
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      await axios.post(`${API}/post`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       setTitle("");
       setDescription("");
       setImagePreview(null);
       setImageFile(null);
+
       fetchPosts();
+
       window.scrollTo({ top: 0, behavior: "smooth" });
+
       if (textareaRef.current) textareaRef.current.style.height = "auto";
     } catch (err) {
+      console.error(err);
       setPopupMsg("Failed to post!");
     }
   };
