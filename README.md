@@ -32,6 +32,18 @@ A full-stack note-taking application that allows users to create, manage, and or
 - **Community Feed**: Post text or images, see others' posts
 - **Like & Comment**: Interact with posts via likes and threaded replies
 - **Chatbot Interface**: Talk to an AI assistant backed by Grok with streaming responses
+- **Persistent Chat History**: Conversations are stored locally per user with automatic migration from previous versions.
+
+### Recent Enhancements
+
+Below are some of the latest updates and logic additions made across the application:
+
+- **Multi-user chat storage**: Chat history is now maintained separately for each user in `localStorage` (`chat_history_by_user`), with legacy data migrated automatically.
+- **Enhanced chat slice**: New Redux actions support active user switching, message updates, and complete history saving.
+- **AI integrations expanded**: Backend now includes packages like `@google/genai`, `@openrouter/sdk`, and `openai` to power the chatbot, and corresponding environment variables have been introduced.
+- **New backend endpoints**: Added routes/controllers for chat history and community posts (`chatbot.controller.js`, `post.controller.js`).
+- **OAuth improvements**: Frontend handles Google OAuth credentials and sends them to backend for authentication.
+- **Package list updates**: Several new dependencies added to both frontend and backend for animation, icons, and API requests.
 
 ### User Interface
 
@@ -158,6 +170,7 @@ A full-stack note-taking application that allows users to create, manage, and or
 - `PUT /api/note/edit-note/:noteId` - Edit a note
 - `DELETE /api/note/delete-note/:noteId` - Delete a note
 - `GET /api/note/all-note` - Get all notes
+
 ### Community
 
 - `GET /api/community/posts` - Retrieve all posts
@@ -169,9 +182,10 @@ A full-stack note-taking application that allows users to create, manage, and or
 ### Chat
 
 - `POST /api/msg/chat` - Send message to chatbot (streams response tokens)
+
 ## Project Structure
 
-```
+````
 NoteApp/
 ├── backend/
 │   ├── src/
@@ -227,7 +241,7 @@ NoteApp/
 │   ├── package.json
 ```│   └── README.md
 └── README.md
-```
+````
 
 ## Acknowledgments
 
