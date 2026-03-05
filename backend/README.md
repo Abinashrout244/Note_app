@@ -1,5 +1,184 @@
 # NoteApp Backend API Documentation
 
+## Project Overview
+
+This is the backend API for the NoteApp, a full-stack application for note-taking and community sharing. The backend is built with Node.js and provides RESTful APIs for user authentication, note management, community posts, and chatbot functionality.
+
+### Main Components
+
+- **Authentication**: User registration, login, password reset
+- **Notes Management**: Create, read, update, delete personal notes
+- **Community Features**: Share posts and interact with other users
+- **Chatbot**: AI-powered chat functionality
+- **Database**: MongoDB for data persistence
+- **Security**: JWT-based authentication and data validation
+
+### Technology Stack
+
+- Node.js
+- Express.js
+- MongoDB
+- JWT for authentication
+- bcrypt for password hashing
+
+## Project Structure & Implementation Details
+
+### Folder Architecture
+
+```
+backend/
+├── src/
+│   ├── app.js                 # Express app setup and route configuration
+│   ├── config/
+│   │   └── database.js        # MongoDB connection setup
+│   ├── controllers/           # Business logic for API endpoints
+│   │   ├── user.controller.js
+│   │   ├── note.controller.js
+│   │   ├── chatbot.controller.js
+│   │   └── post.controller.js
+│   ├── models/                # MongoDB schemas and data models
+│   │   ├── user.model.js
+│   │   ├── notes.model.js
+│   │   └── post.model.js
+│   ├── Routes/                # API route definitions
+│   │   ├── auth.route.js
+│   │   ├── note.route.js
+│   │   ├── chat.route.js
+│   │   └── post.route.js
+│   ├── middlewares/           # Custom middleware functions
+│   │   └── auth.middleware.js
+│   └── utils/                 # Utility functions
+│       └── validateData.js
+├── package.json
+└── README.md
+```
+
+### Key Implementation Details
+
+#### 1. **app.js** - Main Application Entry Point
+
+- Sets up Express server with CORS configuration
+- Connects to MongoDB database
+- Configures middleware: express.json(), cookie-parser, CORS
+- Registers API routes for authentication, notes, chat, and community posts
+- Server runs on PORT from environment variables or defaults to 3000
+
+#### 2. **Controllers** - Business Logic
+
+**user.controller.js**
+
+- `registerUser`: Register new users with email validation, password hashing, JWT token generation
+- `loginUser`: Authenticate users with credentials verification
+- Password reset functionality with email verification
+- Google OAuth authentication integration
+- User profile update and management
+
+**note.controller.js**
+
+- `addNotes`: Create new notes with title, content, and tags
+- `editNote`: Update existing notes by ID validation
+- `deleteNote`: Remove notes from user's collection
+- `getAllNotes`: Fetch all notes for logged-in user
+- `getNoteById`: Retrieve specific note details
+
+**chatbot.controller.js**
+
+- `chatWithGrok`: Streaming chat responses using Grok API (OpenAI compatible)
+- Supports conversation history and context
+- Server-Sent Events (SSE) for real-time text streaming
+
+**post.controller.js**
+
+- `allPosts`: Retrieve all community posts sorted by creation date
+- `createPost`: Create new posts with title, description, and image
+- `likePost`: Toggle like functionality for posts
+- `deletePost`: Remove posts created by user
+- Community engagement features
+
+#### 3. **Models** - Database Schemas
+
+**user.model.js**
+
+- User schema with fields: firstName, lastName, emailId, password, about
+- Validations: Email format validation, password strength requirements
+- Methods: `getHashPassword()` for password hashing, `getAuthToken()` for JWT generation
+- Timestamps for account creation and updates
+
+**notes.model.js**
+
+- Notes schema with fields: userId (reference), title, content, tags
+- Validations: Title minimum 3 characters, both title and content required
+- Relationships: References User model for ownership tracking
+- Automatic timestamps for created and updated entries
+
+**post.model.js**
+
+- Posts schema with fields: userId, title, description, image, likes
+- Author and timestamps maintained automatically
+- Support for community interactions
+
+#### 4. **Middlewares** - Authentication & Authorization
+
+**auth.middleware.js**
+
+- JWT token verification from cookies
+- User authentication check before protected routes
+- Extracts user information for use in controllers
+- Handles token expiration and invalid tokens
+
+#### 5. **Utilities** - Helper Functions
+
+**validateData.js**
+
+- Email format validation
+- Password strength validation (uppercase, lowercase, numbers, special characters)
+- Input sanitization and verification
+
+### Dependencies & Packages
+
+| Package             | Version   | Purpose                                                |
+| ------------------- | --------- | ------------------------------------------------------ |
+| express             | ^5.2.1    | Web framework for API endpoints                        |
+| mongoose            | ^9.2.1    | MongoDB object modeling and database connection        |
+| jsonwebtoken        | ^9.0.3    | JWT token generation and verification                  |
+| bcryptjs            | ^3.0.3    | Password hashing and security                          |
+| cookie-parser       | ^1.4.7    | Parse cookie headers and populate req.cookies          |
+| cors                | ^2.8.6    | Cross-Origin Resource Sharing for frontend interaction |
+| dotenv              | ^17.3.1   | Environment variable management                        |
+| nodemailer          | ^8.0.1    | Email sending for password reset and notifications     |
+| validator           | ^13.15.26 | String validation and sanitization                     |
+| axios               | ^1.13.6   | HTTP client for API requests                           |
+| openai              | ^6.25.0   | OpenAI API integration for ChatGPT functionality       |
+| @google/genai       | ^1.43.0   | Google Generative AI API integration                   |
+| @openrouter/sdk     | ^0.9.11   | OpenRouter API for AI model access                     |
+| google-auth-library | ^10.6.1   | Google OAuth 2.0 authentication                        |
+| crypto              | ^1.0.1    | Cryptographic functions for secure operations          |
+
+### Environment Variables Required
+
+Create a `.env` file in the backend folder with the following:
+
+```
+PORT=3000
+MONGODB_URI=<your-mongodb-connection-string>
+JWT_SECRET=<your-jwt-secret-key>
+FRONTEND_URL=http://localhost:5173
+GROK_API_KEY=<your-grok-api-key>
+OPENAI_API_KEY=<your-openai-api-key>
+GMAIL_USER=<your-gmail>
+GMAIL_PASSWORD=<your-gmail-app-password>
+GOOGLE_CLIENT_ID=<google-oauth-client-id>
+GOOGLE_CLIENT_SECRET=<google-oauth-client-secret>
+```
+
+### Available Scripts
+
+```bash
+npm start      # Run production server
+npm run dev    # Run development server with nodemon (auto-reload)
+npm test       # Run tests (not configured)
+```
+
 ## Authentication Endpoints
 
 ### POST /signup
@@ -752,10 +931,10 @@ Fetches all posts stored in the database sorted by newest first. No authenticati
 
 #### Response Status Codes
 
-| Status Code | Message         | Description                          |
-| ----------- | --------------- | ------------------------------------ |
-| **200**     | Success         | Posts retrieved successfully.        |
-| **500**     | Error message   | Unexpected server error.             |
+| Status Code | Message       | Description                   |
+| ----------- | ------------- | ----------------------------- |
+| **200**     | Success       | Posts retrieved successfully. |
+| **500**     | Error message | Unexpected server error.      |
 
 #### Success Response (200)
 
@@ -798,11 +977,11 @@ Requires valid authentication (`authMiddleware`).
 
 Send a JSON object in the request body with any of the following fields:
 
-| Field       | Type   | Required | Description                             |
-| ----------- | ------ | -------- | --------------------------------------- |
-| `title`     | String | No       | Post title                              |
-| `description` | String | No       | Post description                        |
-| `image`     | String | No       | URL of an image associated with post    |
+| Field         | Type   | Required | Description                          |
+| ------------- | ------ | -------- | ------------------------------------ |
+| `title`       | String | No       | Post title                           |
+| `description` | String | No       | Post description                     |
+| `image`       | String | No       | URL of an image associated with post |
 
 > At least one of title/description/image must be provided.
 
@@ -812,12 +991,12 @@ Send a JSON object in the request body with any of the following fields:
 | ----------- | -------------------------- | ---------------------------------- |
 | **201**     | (post object)              | Post created successfully.         |
 | **400**     | "Post content is required" | No content supplied.               |
-| **401**     | "Login required"          | Authentication missing or invalid. |
+| **401**     | "Login required"           | Authentication missing or invalid. |
 | **500**     | Error message              | Unexpected server error.           |
 
 ---
 
-### PUT /posts/:id/like  (also PATCH)
+### PUT /posts/:id/like (also PATCH)
 
 Increment the like counter of a post.
 
@@ -831,17 +1010,17 @@ Increases the `likes` field on the specified post by one. This endpoint is idemp
 
 #### URL Parameters
 
-| Parameter | Type   | Required | Description           |
-|-----------|--------|----------|-----------------------|
+| Parameter | Type   | Required | Description                |
+| --------- | ------ | -------- | -------------------------- |
 | `id`      | String | Yes      | The ID of the post to like |
 
 #### Response Status Codes
 
-| Status Code | Message         | Description                          |
-| ----------- | --------------- | ------------------------------------ |
-| **200**     | (updated post)  | Post returned with incremented likes |
+| Status Code | Message          | Description                          |
+| ----------- | ---------------- | ------------------------------------ |
+| **200**     | (updated post)   | Post returned with incremented likes |
 | **404**     | "Post not found" | No post with given ID exists         |
-| **500**     | Error message   | Unexpected server error.             |
+| **500**     | Error message    | Unexpected server error.             |
 
 ---
 
@@ -863,26 +1042,26 @@ Requires valid authentication (`authMiddleware`).
 
 #### URL Parameters
 
-| Parameter | Type   | Required | Description           |
-|-----------|--------|----------|-----------------------|
+| Parameter | Type   | Required | Description                      |
+| --------- | ------ | -------- | -------------------------------- |
 | `id`      | String | Yes      | The ID of the post to comment on |
 
 #### Required Data
 
 Send a JSON object in the request body:
 
-| Field | Type   | Required | Description                |
-|-------|--------|----------|----------------------------|
-| `text`| String | Yes      | The comment text content   |
+| Field  | Type   | Required | Description              |
+| ------ | ------ | -------- | ------------------------ |
+| `text` | String | Yes      | The comment text content |
 
 #### Response Status Codes
 
 | Status Code | Message                    | Description                        |
 | ----------- | -------------------------- | ---------------------------------- |
 | **200**     | (post object with comment) | Comment added successfully         |
-| **400**     | "Comment text is required"| Missing comment text              |
-| **401**     | "Login required"          | Authentication missing or invalid. |
-| **404**     | "Post not found"          | No post with given ID exists       |
+| **400**     | "Comment text is required" | Missing comment text               |
+| **401**     | "Login required"           | Authentication missing or invalid. |
+| **404**     | "Post not found"           | No post with given ID exists       |
 | **500**     | Error message              | Unexpected server error.           |
 
 ---
@@ -905,19 +1084,19 @@ Requires valid authentication (`authMiddleware`).
 
 #### URL Parameters
 
-| Parameter | Type   | Required | Description           |
-|-----------|--------|----------|-----------------------|
+| Parameter | Type   | Required | Description                  |
+| --------- | ------ | -------- | ---------------------------- |
 | `id`      | String | Yes      | The ID of the post to delete |
 
 #### Response Status Codes
 
-| Status Code | Message                    | Description                        |
-| ----------- | -------------------------- | ---------------------------------- |
+| Status Code | Message                     | Description                        |
+| ----------- | --------------------------- | ---------------------------------- |
 | **200**     | "Post deleted successfully" | Deletion succeeded                 |
-| **401**     | "Login required"          | Authentication missing or invalid. |
-| **403**     | "Unauthorized"            | User is not the owner of the post  |
-| **404**     | "Post not found"          | No post with given ID exists       |
-| **500**     | Error message              | Unexpected server error.           |
+| **401**     | "Login required"            | Authentication missing or invalid. |
+| **403**     | "Unauthorized"              | User is not the owner of the post  |
+| **404**     | "Post not found"            | No post with given ID exists       |
+| **500**     | Error message               | Unexpected server error.           |
 
 ---
 

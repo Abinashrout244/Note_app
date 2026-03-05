@@ -28,15 +28,25 @@ const userSchema = new Schema(
         }
       },
     },
+    resetPasswordOtp: String,
+    resetPasswordOtpExpire: Date,
+    googleId: {
+      type: String,
+    },
     password: {
       type: String,
-      required: true,
+
       select: false,
       validate(value) {
         if (!validator.isStrongPassword(value)) {
           throw new Error("Provide a Strong Passowrd" + " " + value);
         }
       },
+    },
+    provider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
     },
     photoURL: {
       type: String,
@@ -72,6 +82,7 @@ userSchema.methods.getAuthToken = async function () {
 };
 
 userSchema.methods.comparePassword = async function (userInputPassword) {
+  if (!this.password) return false;
   const isPassword = await bcrypt.compare(userInputPassword, this.password);
   return isPassword;
 };
