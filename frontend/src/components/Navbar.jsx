@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { User, LogOut, SearchIcon, Sun, Moon } from "lucide-react";
+import { User, LogOut, SearchIcon, Sun, Moon, Key } from "lucide-react";
 import axios from "axios";
 import { BASE_URL } from "../utils/Constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -159,6 +159,17 @@ export default function Navbar() {
                 >
                   <User size={16} />
                   Profile
+                </Link>
+                <Link
+                  to="/change-password"
+                  className={`w-full flex items-center gap-2 px-4 py-2 transition ${
+                    isDark
+                      ? "hover:bg-slate-700 text-gray-200"
+                      : "hover:bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  <Key size={16} />
+                  Change Password
                 </Link>
 
                 <button

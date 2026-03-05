@@ -1,21 +1,42 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { BASE_URL } from "../utils/Constants";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
 import toast from "react-hot-toast";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setlastName] = useState("");
-  const [emailId, setEmailId] = useState("test2.mail@gmail.com");
-  const [password, setPassword] = useState("Test2@1234_");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/api/auth/google-login`,
+        {
+          credential: credentialResponse.credential, // ✅ ID TOKEN
+        },
+        { withCredentials: true },
+      );
+
+      dispatch(addUser(res.data.user));
+      toast.success("Login Successfully 🚀");
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+      toast.error("Google Login Failed");
+    }
+  };
+
   const handleLogin = async () => {
     try {
       // e.preventDefault();
@@ -104,6 +125,15 @@ export default function Auth() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {!isSignup && (
+            <div className="text-right mt-1">
+              <Link to="/forgot-password">
+                <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors duration-300">
+                  Forgot Password?
+                </button>
+              </Link>
+            </div>
+          )}
 
           {err && (
             <p className="text-red-600 font-semibold">ERROR:{err?.message}</p>
@@ -125,6 +155,14 @@ export default function Auth() {
             </button>
           )}
         </div>
+
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => {
+            toast.error("Google Login Failed");
+          }}
+          useOneTap={false}
+        />
 
         <p className="text-sm text-center text-gray-600">
           {isSignup ? "Already have account?" : "Don't have account?"}

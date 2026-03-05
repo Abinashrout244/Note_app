@@ -3,11 +3,18 @@ import { BASE_URL } from "../utils/Constants";
 import { Link } from "react-router-dom";
 import { MessageSquare, ArrowLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addMessage, updateMessage } from "../utils/ChatSlice";
+import { addMessage, updateMessage, setActiveUser } from "../utils/ChatSlice";
+
+const getUserChatKey = (user) => {
+  if (!user) return "guest";
+  return user._id || user.id || user.emailId || "guest";
+};
 
 export default function ChatBot() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const messages = useSelector((state) => state.chat.messages);
+  const userChatKey = getUserChatKey(user);
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,6 +27,10 @@ export default function ChatBot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    dispatch(setActiveUser(userChatKey));
+  }, [dispatch, userChatKey]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;

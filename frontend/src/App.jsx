@@ -12,7 +12,9 @@ import { Toaster } from "react-hot-toast";
 import Error from "./utils/Error";
 import ChatBot from "./components/Chat";
 import Community from "./components/Community";
-
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import ChangePassword from "./components/ChangePassword";
 function App() {
   return (
     <Provider store={Store}>
@@ -49,6 +51,16 @@ function App() {
               }
             />
             <Route path="chat" element={<ChatBot />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route
+              path="/change-password"
+              element={
+                <ProtectedRoute>
+                  <ChangePassword />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
