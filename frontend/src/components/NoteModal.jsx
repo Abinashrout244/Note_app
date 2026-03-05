@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { BASE_URL } from "../utils/Constants";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useDispatch } from "react-redux";
 import { setNotes } from "../utils/NoteSlice";
 import { Cross, CrossIcon, PlusIcon } from "lucide-react";

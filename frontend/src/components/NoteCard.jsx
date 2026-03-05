@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext } from "react";
-import { BASE_URL } from "../utils/Constants";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useDispatch } from "react-redux";
 import { deleteNote } from "../utils/NoteSlice";
 import { motion } from "framer-motion";

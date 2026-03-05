@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { ChevronLeft } from "lucide-react";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ChangePassword = () => {
   const navigate = useNavigate();
 
@@ -26,7 +28,7 @@ const ChangePassword = () => {
 
     try {
       const res = await axios.put(
-        "http://localhost:3000/api/auth/change-password",
+        BASE_URL + "/api/auth/change-password",
         {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword,

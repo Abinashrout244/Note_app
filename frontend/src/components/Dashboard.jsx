@@ -4,7 +4,7 @@ import NoteModal from "./NoteModal";
 import { Link } from "react-router-dom";
 import { Plus, FileText, Menu, X, Users, MessageCircle } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "../utils/Constants";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import axios from "axios";
 import { setNotes } from "../utils/NoteSlice";
 import { ThemeContext } from "../utils/ThemeContext";

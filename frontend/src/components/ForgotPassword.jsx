@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronLeft } from "lucide-react";
-
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ForgotPassword = () => {
   const [emailId, setEmailId] = useState("");
   const [message, setMessage] = useState("");
@@ -13,7 +13,7 @@ const ForgotPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/forgot-password",
+        BASE_URL + "/api/auth/forgot-password",
         { emailId },
         { withCredentials: true },
       );

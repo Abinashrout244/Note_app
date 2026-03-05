@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { BASE_URL } from "./Constants";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useDispatch } from "react-redux";
 import { addUser } from "./UserSlice";
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { User, LogOut, SearchIcon, Sun, Moon, Key } from "lucide-react";
 import axios from "axios";
-import { BASE_URL } from "../utils/Constants";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../utils/UserSlice";
 import { Link, useNavigate } from "react-router";

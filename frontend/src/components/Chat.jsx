@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { BASE_URL } from "../utils/Constants";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { Link } from "react-router-dom";
 import { MessageSquare, ArrowLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";

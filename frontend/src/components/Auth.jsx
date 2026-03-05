@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { BASE_URL } from "../utils/Constants";
+
 import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
 import toast from "react-hot-toast";
 import { GoogleLogin } from "@react-oauth/google";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);

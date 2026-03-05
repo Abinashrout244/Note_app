@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import toast from "react-hot-toast";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ResetPassword = () => {
   const location = useLocation();
@@ -31,14 +32,11 @@ const ResetPassword = () => {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/api/auth/reset-password",
-        {
-          emailId: formData.emailId,
-          otp: formData.otp,
-          newPassword: formData.newPassword,
-        },
-      );
+      const res = await axios.post(BASE_URL + "/api/auth/reset-password", {
+        emailId: formData.emailId,
+        otp: formData.otp,
+        newPassword: formData.newPassword,
+      });
 
       setMessage(res.data.message);
 
