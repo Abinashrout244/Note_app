@@ -30,7 +30,11 @@ const registerUser = async (req, res) => {
 
     const token = await user.getAuthToken();
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
 
     res.status(201).json({ message: "User Register Succesfully", token, user });
   } catch (err) {
@@ -56,8 +60,11 @@ const loginUser = async (req, res) => {
     }
 
     const token = await findUser.getAuthToken();
-
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
 
     res.json({ message: "User LogedIn Sucessfully", token, findUser });
   } catch (err) {
@@ -96,8 +103,9 @@ const googleLogin = async (req, res) => {
     const token = await user.getAuthToken();
 
     res.cookie("token", token, {
-      sameSite: "lax",
       httpOnly: true,
+      secure: true,
+      sameSite: "None",
     });
 
     res.json({
