@@ -202,10 +202,9 @@ const sendResetOtp = async (req, res) => {
     await user.save();
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
       port: 465,
       secure: true,
-      connectionTimeout: 10000,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASS,
