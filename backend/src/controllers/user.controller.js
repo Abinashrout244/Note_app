@@ -121,8 +121,13 @@ const googleLogin = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
-    res.cookie("token", null, { maxAge: 0 });
-    res.json({ success: true, message: "Logout Sucessfully" });
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.json({ success: true, message: "Logout Successfully" });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
