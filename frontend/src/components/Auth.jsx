@@ -12,8 +12,8 @@ export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setlastName] = useState("");
-  const [emailId, setEmailId] = useState("routabinash3775@gmail.com");
-  const [password, setPassword] = useState("Abhi@1234_");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
 
   const navigate = useNavigate();
