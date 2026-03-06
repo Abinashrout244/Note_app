@@ -12,8 +12,8 @@ export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setlastName] = useState("");
-  const [emailId, setEmailId] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailId, setEmailId] = useState("routabinash3775@gmail.com");
+  const [password, setPassword] = useState("Abhi@1234_");
   const [err, setErr] = useState("");
 
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ export default function Auth() {
       );
 
       dispatch(addUser(res.data.user));
+      localStorage.setItem("user", JSON.stringify(res?.data?.user));
       toast.success("Login Successfully 🚀");
       navigate("/");
     } catch (err) {
@@ -53,6 +54,7 @@ export default function Auth() {
       );
 
       dispatch(addUser(res?.data?.findUser));
+      localStorage.setItem("user", JSON.stringify(res?.data?.findUser));
       toast.success("Login Successfully ");
       //console.log(res?.data?.findUser);
       navigate("/");
@@ -71,6 +73,7 @@ export default function Auth() {
       );
       //console.log(res);
       dispatch(addUser(res?.data?.data));
+      localStorage.setItem("user", JSON.stringify(res?.data?.findUser));
       toast.success("User Register Successfully ");
       navigate("/");
     } catch (err) {

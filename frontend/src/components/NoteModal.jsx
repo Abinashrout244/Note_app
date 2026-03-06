@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setNotes } from "../utils/NoteSlice";
 import { Cross, CrossIcon, PlusIcon } from "lucide-react";
 import { ThemeContext } from "../utils/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 export default function NoteModal({ close, editNote, dashTitle }) {
   const [title, setTitle] = useState("");
@@ -17,12 +18,19 @@ export default function NoteModal({ close, editNote, dashTitle }) {
   const { theme } = useContext(ThemeContext);
 
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const addClick = () => {
     if (!inputTags.trim()) return;
     //setTags((prev) => [...prev, inputTags.trim()]);
     setTags([...tags, inputTags.trim()]);
+
     setInputTags("");
+    if (!user) {
+      navigate("/login");
+      return;
+    }
   };
 
   const removeClick = (itemIndex) => {

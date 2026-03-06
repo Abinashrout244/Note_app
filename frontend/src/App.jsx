@@ -15,6 +15,7 @@ import Community from "./components/Community";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ChangePassword from "./components/ChangePassword";
+
 function App() {
   return (
     <Provider store={Store}>
@@ -31,6 +32,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
               <Route
                 path="profile"
                 element={
@@ -50,7 +52,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="chat" element={<ChatBot />} />
+            <Route
+              path="chat"
+              element={
+                <ProtectedRoute>
+                  <ChatBot />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route
