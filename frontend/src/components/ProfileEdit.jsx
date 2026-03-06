@@ -1,13 +1,15 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { addUser } from "../utils/UserSlice";
 import toast from "react-hot-toast";
+import { ThemeContext } from "../utils/ThemeContext";
 
 const ProfileEdit = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const { theme } = useContext(ThemeContext);
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -78,15 +80,29 @@ const ProfileEdit = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] pt-24 pb-10 md:pb-0 md:pt-16 bg-linear-to-br from-slate-100 via-blue-50 to-indigo-100 flex items-center">
+    <div
+      className={`min-h-[calc(100vh-64px)] pt-24 pb-10 md:pb-0 md:pt-16 flex items-center ${
+        theme === "Light"
+          ? "bg-linear-to-br from-slate-100 via-blue-50 to-indigo-100"
+          : "bg-slate-800"
+      }`}
+    >
       <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-10 items-center">
           {/* ================= FORM ================= */}
           <form
             onSubmit={handleEdit}
-            className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 space-y-4"
+            className={`rounded-3xl shadow-xl p-6 sm:p-8 space-y-4 ${
+              theme === "Light"
+                ? "bg-white text-gray-800"
+                : "bg-slate-900 text-white"
+            }`}
           >
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+            <h2
+              className={`text-2xl sm:text-3xl font-bold ${
+                theme === "Light" ? "text-gray-800" : "text-white"
+              }`}
+            >
               Edit Profile
             </h2>
 
@@ -96,7 +112,11 @@ const ProfileEdit = () => {
               value={form.firstName}
               onChange={handleChange}
               placeholder="First Name"
-              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+              className={`w-full p-3 rounded-xl border outline-none ${
+                theme === "Light"
+                  ? "border-gray-200 focus:ring-2 focus:ring-blue-400 bg-white text-black"
+                  : "border-slate-700 focus:ring-2 focus:ring-blue-500 bg-slate-800 text-white"
+              }`}
             />
 
             <input
@@ -105,7 +125,11 @@ const ProfileEdit = () => {
               value={form.lastName}
               onChange={handleChange}
               placeholder="Last Name"
-              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+              className={`w-full p-3 rounded-xl border outline-none ${
+                theme === "Light"
+                  ? "border-gray-200 focus:ring-2 focus:ring-blue-400 bg-white text-black"
+                  : "border-slate-700 focus:ring-2 focus:ring-blue-500 bg-slate-800 text-white"
+              }`}
             />
 
             <input
@@ -114,7 +138,11 @@ const ProfileEdit = () => {
               value={form.emailId}
               onChange={handleChange}
               placeholder="Email"
-              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+              className={`w-full p-3 rounded-xl border outline-none ${
+                theme === "Light"
+                  ? "border-gray-200 focus:ring-2 focus:ring-blue-400 bg-white text-black"
+                  : "border-slate-700 focus:ring-2 focus:ring-blue-500 bg-slate-800 text-white"
+              }`}
             />
 
             <input
@@ -123,7 +151,11 @@ const ProfileEdit = () => {
               value={form.photoURL}
               onChange={handleChange}
               placeholder="Profile Image URL"
-              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none"
+              className={`w-full p-3 rounded-xl border outline-none ${
+                theme === "Light"
+                  ? "border-gray-200 focus:ring-2 focus:ring-blue-400 bg-white text-black"
+                  : "border-slate-700 focus:ring-2 focus:ring-blue-500 bg-slate-800 text-white"
+              }`}
             />
 
             <textarea
@@ -132,16 +164,25 @@ const ProfileEdit = () => {
               onChange={handleChange}
               rows="3"
               placeholder="About You"
-              className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 outline-none resize-none"
+              className={`w-full p-3 rounded-xl border outline-none resize-none ${
+                theme === "Light"
+                  ? "border-gray-200 focus:ring-2 focus:ring-blue-400 bg-white text-black"
+                  : "border-slate-700 focus:ring-2 focus:ring-blue-500 bg-slate-800 text-white"
+              }`}
             />
 
             <button
               type="submit"
               disabled={!isEdited || loading}
-              className={`w-full py-3  text-white rounded-xl font-semibold shadow-lg  ${isEdited === false ? "cursor-not-allowed bg-indigo-300" : "cursor-grab bg-linear-to-r from-blue-600 to-indigo-600 hover:scale-[1.02] transition-all duration-300"}`}
+              className={`w-full py-3 text-white rounded-xl font-semibold shadow-lg ${
+                isEdited === false
+                  ? "cursor-not-allowed bg-indigo-300"
+                  : "cursor-grab bg-linear-to-r from-blue-600 to-indigo-600 hover:scale-[1.02] transition-all duration-300"
+              }`}
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
+
             {err && (
               <p className="font-semibold text-red-600">ERROR:{err?.message}</p>
             )}
@@ -149,7 +190,11 @@ const ProfileEdit = () => {
 
           {/* ================= PROFILE CARD ================= */}
           <div className="flex justify-center md:justify-end">
-            <div className="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div
+              className={`w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden ${
+                theme === "Light" ? "bg-white" : "bg-slate-900 text-white"
+              }`}
+            >
               <div className="h-28 sm:h-32 bg-linear-to-r from-blue-500 to-indigo-600"></div>
 
               <div className="flex flex-col items-center px-6 pb-8 -mt-12 sm:-mt-14">
@@ -159,15 +204,27 @@ const ProfileEdit = () => {
                   className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-4 border-white shadow-lg"
                 />
 
-                <h3 className="mt-3 text-xl sm:text-2xl font-bold text-gray-800 text-center">
+                <h3
+                  className={`mt-3 text-xl sm:text-2xl font-bold text-center ${
+                    theme === "Light" ? "text-gray-800" : "text-white"
+                  }`}
+                >
                   {form.firstName} {form.lastName}
                 </h3>
 
-                <p className="text-sm text-gray-500 mt-1 text-center">
+                <p
+                  className={`text-sm mt-1 text-center ${
+                    theme === "Light" ? "text-gray-500" : "text-gray-400"
+                  }`}
+                >
                   {form.emailId}
                 </p>
 
-                <p className="text-center mt-3 text-gray-600 text-sm">
+                <p
+                  className={`text-center mt-3 text-sm ${
+                    theme === "Light" ? "text-gray-600" : "text-gray-300"
+                  }`}
+                >
                   {form.about}
                 </p>
               </div>

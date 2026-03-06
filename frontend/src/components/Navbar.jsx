@@ -150,17 +150,19 @@ export default function Navbar() {
                   </button>
                 </div>
 
-                <Link
-                  to="/login"
-                  className={`w-full flex items-center gap-2 px-4 py-2 transition ${
-                    isDark
-                      ? "hover:bg-slate-700 text-gray-200"
-                      : "hover:bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  <LogIn size={16} />
-                  Login
-                </Link>
+                {!user && (
+                  <Link
+                    to="/login"
+                    className={`w-full flex items-center gap-2 px-4 py-2 transition ${
+                      isDark
+                        ? "hover:bg-slate-700 text-gray-200"
+                        : "hover:bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    <LogIn size={16} />
+                    Login
+                  </Link>
+                )}
 
                 <Link
                   to="/profile"
