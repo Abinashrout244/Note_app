@@ -1,57 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useDispatch } from "react-redux";
 import { addUser, removeUser } from "./UserSlice";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ProtectedRoute = ({ children }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let mounted = true;
-
-    const fetchUser = async () => {
+    const checkAuth = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/api/auth/profile`, {
           withCredentials: true,
         });
 
-        if (!mounted) return;
-        dispatch(addUser(res?.data?.user));
-        setIsAuthorized(true);
+        dispatch(addUser(res.data.user));
         setLoading(false);
       } catch (err) {
-        if (!mounted) return;
-        if (err?.response?.status === 401) {
-          localStorage.removeItem("user");
-          dispatch(removeUser());
-          setIsAuthorized(false);
-          navigate("/login", { replace: true });
-        }
-        console.log(err?.response || err);
-        setLoading(false);
+        dispatch(removeUser());
+        localStorage.removeItem("user");
+
+        // 🔥 FORCE REDIRECT
+        window.location.href = "/login";
       }
     };
 
-    fetchUser();
+    checkAuth();
+  }, []);
 
-    return () => {
-      mounted = false;
-    };
-  }, [dispatch, navigate]);
-
-  if (loading)
+  if (loading) {
     return (
-      <div className="h-screen text-3xl font-semibold justify-center items-center">
+      <div className="flex items-center justify-center h-screen text-xl font-semibold">
         Loading...
       </div>
     );
-
-  if (!isAuthorized) return null;
+  }
 
   return children;
 };
