@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { User, LogOut, SearchIcon, Sun, Moon, Key } from "lucide-react";
+import { User, LogOut, SearchIcon, Sun, Moon, Key, LogIn } from "lucide-react";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import { useDispatch, useSelector } from "react-redux";
@@ -149,6 +149,18 @@ export default function Navbar() {
                     {isDark ? <Sun size={16} /> : <Moon size={16} />}
                   </button>
                 </div>
+
+                <Link
+                  to="/login"
+                  className={`w-full flex items-center gap-2 px-4 py-2 transition ${
+                    isDark
+                      ? "hover:bg-slate-700 text-gray-200"
+                      : "hover:bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  <LogIn size={16} />
+                  Login
+                </Link>
 
                 <Link
                   to="/profile"
