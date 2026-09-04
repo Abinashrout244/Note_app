@@ -1,20 +1,23 @@
 const express = require("express");
 const cors = require("cors");
-const DBConnection = require("./config/database");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+
+const DBConnection = require("./config/database");
+
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-
+    origin: process.env.CLIENT_URL || "http://localhost:8080",
     credentials: true,
   }),
 );
 
+// Routes
 const authRouter = require("./Routes/auth.route");
 const noteRouter = require("./Routes/note.route");
 const chatRouter = require("./Routes/chat.route");
@@ -25,13 +28,24 @@ app.use("/api/note", noteRouter);
 app.use("/api/msg", chatRouter);
 app.use("/api/community", postRouter);
 
+// Health check
+app.get("/", (req, res) => {
+  res.json({
+    message: "NoteFlow Backend is running 🚀",
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+
 DBConnection()
   .then(() => {
     console.log("DB connection establish Perfectly");
-    app.listen(process.env.PORT || 3000, () => {
-      console.log("Server Connection Establish Perfectly");
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server Connection Establish Perfectly on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.log("mongo db connection Not establish");
+    console.error("MongoDB connection failed:", err);
+    process.exit(1);
   });
